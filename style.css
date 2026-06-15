@@ -1,0 +1,48 @@
+/* ==========================================
+   ESTILOS PERSONALIZADOS PARA GOOGLE TRANSLATE 
+   ========================================== */
+
+.translate-container {
+    background-color: #0d0d16;
+    border: 1px solid #282840;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.translate-container p {
+    font-size: 0.8rem;
+    color: #7b7b93;
+    margin-bottom: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Forzar que el menú de Google combine con tu tema oscuro */
+.goog-te-gadget-simple {
+    background-color: #1a1a26 !important;
+    border: 1px solid #ff007f !important;
+    padding: 6px !important;
+    border-radius: 4px !important;
+    font-family: inherit !important;
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.goog-te-gadget-simple span {
+    color: #00ffcc !important; /* Texto en cian */
+    font-size: 0.9rem !important;
+}
+
+.goog-te-gadget-icon {
+    display: none !important; /* Oculta el logo de Google para que quede más limpio */
+}
+
+/* Ocultar la barra superior molesta que Google añade por defecto al traducir */
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+}
+body {
+    top: 0px !important;
+}
