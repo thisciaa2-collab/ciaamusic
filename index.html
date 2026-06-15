@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wiki ElCiaa - Oficial</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -21,6 +22,7 @@
 
         <ul class="nav-links">
             <li><a href="#inicio" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+            <li><a href="ciaa.html"><i class="fas fa-user-music"></i> Biografía: Ciaa</a></li>
             <li class="section-title">Discografía</li>
             <li><a href="#sin-destino"><i class="fas fa-compact-disc"></i> Sin Destino Fijo</a></li>
             <li><a href="#todo-es-feliz"><i class="fas fa-music"></i> Todo Es Feliz</a></li>
@@ -50,7 +52,7 @@
             <div class="content-layout">
                 <div class="body-text">
                     <h2>Sin Destino Fijo</h2>
-                    <p><strong>Sin Destino Fijo</strong> es el sencillo debut oficial del artista <strong>ElCiaa</strong>, lanzado en mayo de 2026. Este track marca el inicio formal de su trayectoria musical en la escena.</p>
+                    <p><strong>Sin Destino Fijo</strong> es el sencillo debut oficial del artista <strong>ElCiaa</strong>, lanzado en mayo de 2026.</p>
                 </div>
                 <aside class="infobox">
                     <h3>Sin Destino Fijo</h3>
@@ -66,7 +68,7 @@
             <div class="content-layout">
                 <div class="body-text">
                     <h2>Todo Es Feliz</h2>
-                    <p><strong>Todo Es Feliz</strong> es un sencillo de <strong>ElCiaa</strong> realizado en colaboración con el artista <strong>MCx</strong>, publicado en mayo de 2026.</p>
+                    <p><strong>Todo Es Feliz</strong> es un sencillo de <strong>ElCiaa</strong> en colaboración con <strong>MCx</strong>.</p>
                 </div>
                 <aside class="infobox">
                     <h3>Todo Es Feliz</h3>
@@ -81,7 +83,7 @@
             <div class="content-layout">
                 <div class="body-text">
                     <h2>Solo</h2>
-                    <p><strong>Solo</strong> es un single individual de <strong>ElCiaa</strong> lanzado en mayo de 2026.</p>
+                    <p><strong>Solo</strong> es un single de <strong>ElCiaa</strong> lanzado en mayo de 2026.</p>
                 </div>
                 <aside class="infobox">
                     <h3>Solo</h3>
@@ -95,7 +97,7 @@
             <div class="content-layout">
                 <div class="body-text">
                     <h2>Álbum: Cuidado</h2>
-                    <p><strong>Cuidado</strong> es el álbum de estudio debut de <strong>ElCiaa</strong>, lanzado en su totalidad en mayo de 2026.</p>
+                    <p><strong>Cuidado</strong> es el álbum de estudio debut de <strong>ElCiaa</strong>.</p>
                     <h3>Tracklist Oficial</h3>
                     <ul>
                         <li>1. Horizonte de Neón</li>
@@ -114,14 +116,12 @@
     </main>
 
     <script>
-        // Sistema de navegación de la Wiki
         const links = document.querySelectorAll('.nav-links a');
         const sections = document.querySelectorAll('.wiki-section');
-
         links.forEach(link => {
             link.addEventListener('click', (e) => {
                 const targetId = link.getAttribute('href').substring(1);
-                if(targetId) {
+                if(targetId && targetId !== "ciaa.html") {
                     e.preventDefault();
                     links.forEach(l => l.classList.remove('active'));
                     link.classList.add('active');
@@ -143,6 +143,5 @@
         }
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
 </body>
 </html>
