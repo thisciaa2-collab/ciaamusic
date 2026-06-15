@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiki ElCiaa - Oficial</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h2>Wiki ElCiaa</h2>
+        </div>
+
+        <div class="translate-container">
+            <p><i class="fas fa-globe"></i> Idioma / Language:</p>
+            <div id="google_translate_element"></div>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="#inicio" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+            <li class="section-title">Discografía</li>
+            <li><a href="#sin-destino"><i class="fas fa-compact-disc"></i> Sin Destino Fijo</a></li>
+            <li><a href="#todo-es-feliz"><i class="fas fa-music"></i> Todo Es Feliz</a></li>
+            <li><a href="#solo"><i class="fas fa-user"></i> Solo</a></li>
+            <li><a href="#album-cuidado"><i class="fas fa-record-vinyl"></i> Álbum: Cuidado</a></li>
+        </ul>
+        
+        <div class="visitor-counter">
+            <p><i class="fas fa-eye"></i> Visitas:</p>
+            <div class="counter-render">
+                <script type="text/javascript" src="https://contador.websiteout.com/js/21/0/1504/0"></script>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section id="inicio" class="wiki-section">
+            <div class="hero-banner">
+                <h1>Bienvenido a la Wiki Oficial</h1>
+                <p>El centro de información definitivo sobre los lanzamientos, producción y trayectoria de <strong>ElCiaa</strong>.</p>
+            </div>
+            <h2>Novedades Recientes</h2>
+            <p>Explora el catálogo musical completo lanzado en mayo de 2026. Utiliza el menú lateral para navegar por los singles y el álbum de estudio.</p>
+        </section>
+
+        <section id="sin-destino" class="wiki-section" style="display:none;">
+            <div class="content-layout">
+                <div class="body-text">
+                    <h2>Sin Destino Fijo</h2>
+                    <p><strong>Sin Destino Fijo</strong> es el sencillo debut oficial del artista <strong>ElCiaa</strong>, lanzado en mayo de 2026. Este track marca el inicio formal de su trayectoria musical en la escena.</p>
+                </div>
+                <aside class="infobox">
+                    <h3>Sin Destino Fijo</h3>
+                    <div class="infobox-img">💿</div>
+                    <div class="info-row"><strong>Artista:</strong> <span>ElCiaa</span></div>
+                    <div class="info-row"><strong>Tipo:</strong> <span>Single</span></div>
+                    <div class="info-row"><strong>Lanzamiento:</strong> <span>Mayo 2026</span></div>
+                </aside>
+            </div>
+        </section>
+
+        <section id="todo-es-feliz" class="wiki-section" style="display:none;">
+            <div class="content-layout">
+                <div class="body-text">
+                    <h2>Todo Es Feliz</h2>
+                    <p><strong>Todo Es Feliz</strong> es un sencillo de <strong>ElCiaa</strong> realizado en colaboración con el artista <strong>MCx</strong>, publicado en mayo de 2026.</p>
+                </div>
+                <aside class="infobox">
+                    <h3>Todo Es Feliz</h3>
+                    <div class="infobox-img">🎵</div>
+                    <div class="info-row"><strong>Artista:</strong> <span>ElCiaa</span></div>
+                    <div class="info-row"><strong>Colaboración:</strong> <span>MCx</span></div>
+                </aside>
+            </div>
+        </section>
+
+        <section id="solo" class="wiki-section" style="display:none;">
+            <div class="content-layout">
+                <div class="body-text">
+                    <h2>Solo</h2>
+                    <p><strong>Solo</strong> es un single individual de <strong>ElCiaa</strong> lanzado en mayo de 2026.</p>
+                </div>
+                <aside class="infobox">
+                    <h3>Solo</h3>
+                    <div class="infobox-img">🧑‍🎤</div>
+                    <div class="info-row"><strong>Artista:</strong> <span>ElCiaa</span></div>
+                </aside>
+            </div>
+        </section>
+
+        <section id="album-cuidado" class="wiki-section" style="display:none;">
+            <div class="content-layout">
+                <div class="body-text">
+                    <h2>Álbum: Cuidado</h2>
+                    <p><strong>Cuidado</strong> es el álbum de estudio debut de <strong>ElCiaa</strong>, lanzado en su totalidad en mayo de 2026.</p>
+                    <h3>Tracklist Oficial</h3>
+                    <ul>
+                        <li>1. Horizonte de Neón</li>
+                        <li>2. Concepción</li>
+                        <li>3. Sin Frenos</li>
+                        <li>4. Todo Es Feliz (feat. MCx)</li>
+                    </ul>
+                </div>
+                <aside class="infobox">
+                    <h3>Cuidado</h3>
+                    <div class="infobox-img">🎚️</div>
+                    <div class="info-row"><strong>Artista:</strong> <span>ElCiaa</span></div>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Sistema de navegación de la Wiki
+        const links = document.querySelectorAll('.nav-links a');
+        const sections = document.querySelectorAll('.wiki-section');
+
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const targetId = link.getAttribute('href').substring(1);
+                if(targetId) {
+                    e.preventDefault();
+                    links.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    sections.forEach(section => {
+                        section.style.display = section.id === targetId ? 'block' : 'none';
+                    });
+                }
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'es', 
+                includedLanguages: 'en,es,pt,fr,it,de,ja,ko',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>
