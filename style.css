@@ -1,7 +1,203 @@
-/* ==========================================
-   ESTILOS PERSONALIZADOS PARA GOOGLE TRANSLATE 
-   ========================================== */
+/* Configuración General */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
+body {
+    display: flex;
+    background-color: #0f0f1a;
+    color: #e1e1e6;
+    min-height: 100vh;
+}
+
+/* MENÚ LATERAL (SIDEBAR) */
+.sidebar {
+    width: 280px;
+    background-color: #161624;
+    border-right: 1px solid #282840;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    padding: 20px;
+}
+
+.sidebar-header h2 {
+    color: #00ffcc;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.nav-links {
+    list-style: none;
+    flex-grow: 1;
+}
+
+.nav-links li {
+    margin-bottom: 5px;
+}
+
+.nav-links .section-title {
+    color: #7b7b93;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin: 20px 0 5px 10px;
+    letter-spacing: 1px;
+}
+
+.nav-links a {
+    display: block;
+    color: #c4c4d4;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.nav-links a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    background-color: #202036;
+    color: #ff007f;
+    padding-left: 20px;
+}
+
+/* CONTADOR DE VISITAS */
+.visitor-counter {
+    background-color: #0d0d16;
+    border: 1px solid #282840;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.visitor-counter p {
+    font-size: 0.85rem;
+    color: #7b7b93;
+    margin-bottom: 8px;
+}
+
+.counter-render {
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: #1a1a26;
+    border-radius: 4px;
+    border: 1px solid #00ffcc;
+}
+
+/* CONTENIDO PRINCIPAL */
+.main-content {
+    margin-left: 280px;
+    padding: 40px;
+    width: calc(100% - 280px);
+}
+
+.hero-banner {
+    background: linear-gradient(135deg, #201a30, #141424);
+    border-left: 5px solid #ff007f;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.hero-banner h1 {
+    color: #ffffff;
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.hero-banner p {
+    color: #a5a5c5;
+}
+
+h2 {
+    color: #00ffcc;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+h3 {
+    color: #ffffff;
+    margin: 20px 0 10px 0;
+}
+
+p, ul, ol {
+    line-height: 1.7;
+    color: #c4c4d4;
+    margin-bottom: 15px;
+}
+
+ul, ol {
+    padding-left: 20px;
+}
+
+/* INFOBOX (COMO FANDOM) */
+.content-layout {
+    display: flex;
+    gap: 30px;
+}
+
+.body-text {
+    flex-grow: 1;
+}
+
+.infobox {
+    width: 300px;
+    background-color: #161624;
+    border: 1px solid #ff007f;
+    border-radius: 8px;
+    padding: 15px;
+    align-self: flex-start;
+}
+
+.infobox h3 {
+    margin-top: 0;
+    text-align: center;
+    background-color: #202036;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    color: #00ffcc;
+}
+
+.infobox-img {
+    font-size: 4rem;
+    text-align: center;
+    margin: 15px 0;
+    background: #0d0d16;
+    padding: 20px;
+    border-radius: 6px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    padding: 8px 0;
+    border-bottom: 1px solid #232338;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row strong {
+    color: #7b7b93;
+}
+
+/* TRADUCTOR DE GOOGLE */
 .translate-container {
     background-color: #0d0d16;
     border: 1px solid #282840;
@@ -18,7 +214,6 @@
     text-transform: uppercase;
 }
 
-/* Forzar que el menú de Google combine con tu tema oscuro */
 .goog-te-gadget-simple {
     background-color: #1a1a26 !important;
     border: 1px solid #ff007f !important;
@@ -31,15 +226,14 @@
 }
 
 .goog-te-gadget-simple span {
-    color: #00ffcc !important; /* Texto en cian */
+    color: #00ffcc !important;
     font-size: 0.9rem !important;
 }
 
 .goog-te-gadget-icon {
-    display: none !important; /* Oculta el logo de Google para que quede más limpio */
+    display: none !important;
 }
 
-/* Ocultar la barra superior molesta que Google añade por defecto al traducir */
 .goog-te-banner-frame.skiptranslate {
     display: none !important;
 }
