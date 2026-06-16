@@ -1,952 +1,787 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ciaa — Músico Chileno</title>
-  <link rel="icon" type="image/x-icon" href="https://ciaamusic.pages.dev/favicon.ico" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
-
-  <style>
-    /* ─── Tokens ─── */
-    :root {
-      --ink:      #0d0d10;
-      --paper:    #f5f2ed;
-      --mist:     #e8e4dd;
-      --signal:   #c24d2c;   /* warm terracotta-ember */
-      --signal2:  #4a3f8f;   /* deep violet */
-      --fade:     #a09a90;
-      --white:    #ffffff;
-
-      --font-display: 'Syne', sans-serif;
-      --font-body:    'Space Grotesk', sans-serif;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--ink);
-      color: var(--paper);
-      font-family: var(--font-body);
-      font-size: 16px;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* ─── Noise overlay ─── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      background-size: 180px;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.35;
-    }
-
-    /* ─── Nav ─── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.2rem 2.5rem;
-      background: rgba(13,13,16,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .nav-logo {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: var(--paper);
-      text-decoration: none;
-    }
-
-    .nav-logo span { color: var(--signal); }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--fade);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover { color: var(--paper); }
-
-    /* ─── Hero ─── */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 8rem 2.5rem 4rem;
-      overflow: hidden;
-    }
-
-    /* Animated radial glow */
-    .hero::after {
-      content: '';
-      position: absolute;
-      width: 700px;
-      height: 700px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(194,77,44,0.22) 0%, transparent 70%);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -55%);
-      animation: pulse 6s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: translate(-50%, -55%) scale(1); opacity: 0.8; }
-      50%       { transform: translate(-50%, -55%) scale(1.12); opacity: 1; }
-    }
-
-    /* Floating orbs */
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-      filter: blur(60px);
-    }
-
-    .orb-1 {
-      width: 350px; height: 350px;
-      background: rgba(74,63,143,0.3);
-      top: 10%; right: 5%;
-      animation: drift1 10s ease-in-out infinite;
-    }
-
-    .orb-2 {
-      width: 200px; height: 200px;
-      background: rgba(194,77,44,0.25);
-      bottom: 15%; left: 8%;
-      animation: drift2 13s ease-in-out infinite;
-    }
-
-    @keyframes drift1 {
-      0%, 100% { transform: translateY(0px) translateX(0px); }
-      50%       { transform: translateY(-30px) translateX(20px); }
-    }
-
-    @keyframes drift2 {
-      0%, 100% { transform: translateY(0px); }
-      50%       { transform: translateY(25px); }
-    }
-
-    .hero-eyebrow {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--signal);
-      margin-bottom: 1.5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-eyebrow::before {
-      content: '';
-      display: inline-block;
-      width: 2.5rem;
-      height: 1px;
-      background: var(--signal);
-      vertical-align: middle;
-      margin-right: 0.75rem;
-    }
-
-    .hero-name {
-      font-family: var(--font-display);
-      font-size: clamp(5rem, 18vw, 14rem);
-      font-weight: 800;
-      line-height: 0.88;
-      letter-spacing: -0.04em;
-      color: var(--paper);
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-name .stroke {
-      -webkit-text-stroke: 1.5px var(--paper);
-      color: transparent;
-    }
-
-    .hero-tagline {
-      margin-top: 2.5rem;
-      font-size: clamp(1rem, 2.5vw, 1.2rem);
-      color: var(--fade);
-      max-width: 42ch;
-      line-height: 1.7;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-cta {
-      margin-top: 2.5rem;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.6rem;
-      border-radius: 2px;
-      font-family: var(--font-body);
-      font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn:hover { transform: translateY(-2px); }
-
-    .btn-primary {
-      background: var(--signal);
-      color: var(--white);
-      box-shadow: 0 0 0 0 rgba(194,77,44,0.4);
-    }
-
-    .btn-primary:hover {
-      box-shadow: 0 8px 30px rgba(194,77,44,0.35);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--paper);
-      border: 1px solid rgba(255,255,255,0.25);
-    }
-
-    .btn-ghost:hover {
-      border-color: var(--paper);
-      background: rgba(255,255,255,0.05);
-    }
-
-    /* ─── Scroll indicator ─── */
-    .scroll-indicator {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--fade);
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      z-index: 1;
-      animation: bounce 2.5s ease-in-out infinite;
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50%       { transform: translateX(-50%) translateY(8px); }
-    }
-
-    .scroll-indicator svg { opacity: 0.5; }
-
-    /* ─── Section base ─── */
-    section {
-      position: relative;
-      z-index: 1;
-      padding: 6rem 2.5rem;
-    }
-
-    .section-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--signal);
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      color: var(--paper);
-      margin-bottom: 1.5rem;
-    }
-
-    /* Divider */
-    .divider {
-      border: none;
-      height: 1px;
-      background: rgba(255,255,255,0.08);
-      margin: 0 2.5rem;
-    }
-
-    /* ─── About ─── */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
-      align-items: start;
-      margin-top: 2rem;
-    }
-
-    .about-text p {
-      color: var(--fade);
-      margin-bottom: 1rem;
-      font-size: 1.05rem;
-    }
-
-    .about-text p strong { color: var(--paper); }
-
-    .about-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-
-    .stat-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 4px;
-      padding: 1.5rem;
-      transition: border-color 0.2s;
-    }
-
-    .stat-card:hover { border-color: rgba(194,77,44,0.35); }
-
-    .stat-num {
-      font-family: var(--font-display);
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--paper);
-      line-height: 1;
-    }
-
-    .stat-num .accent { color: var(--signal); }
-
-    .stat-label {
-      margin-top: 0.4rem;
-      font-size: 0.8rem;
-      color: var(--fade);
-      letter-spacing: 0.05em;
-    }
-
-    /* ─── Discography ─── */
-    .disco-section {
-      background: rgba(255,255,255,0.02);
-    }
-
-    .disco-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-
-    .release-card {
-      position: relative;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 4px;
-      padding: 2rem;
-      overflow: hidden;
-      transition: transform 0.25s, border-color 0.25s;
-    }
-
-    .release-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--signal), var(--signal2));
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s;
-    }
-
-    .release-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255,255,255,0.15);
-    }
-
-    .release-card:hover::before { transform: scaleX(1); }
-
-    .release-type {
-      display: inline-block;
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      padding: 0.25rem 0.65rem;
-      border-radius: 2px;
-      margin-bottom: 1.2rem;
-    }
-
-    .type-single {
-      background: rgba(194,77,44,0.2);
-      color: #e8866a;
-      border: 1px solid rgba(194,77,44,0.3);
-    }
-
-    .type-ep {
-      background: rgba(74,63,143,0.25);
-      color: #9d94d4;
-      border: 1px solid rgba(74,63,143,0.35);
-    }
-
-    .release-title {
-      font-family: var(--font-display);
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--paper);
-      letter-spacing: -0.02em;
-      margin-bottom: 0.5rem;
-    }
-
-    .release-artists {
-      font-size: 0.85rem;
-      color: var(--fade);
-      margin-bottom: 1.2rem;
-    }
-
-    .release-desc {
-      font-size: 0.9rem;
-      color: var(--fade);
-      line-height: 1.6;
-    }
-
-    .release-icon {
-      position: absolute;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      width: 2.5rem;
-      height: 2.5rem;
-      opacity: 0.1;
-    }
-
-    /* ─── Waveform visual ─── */
-    .waveform {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      margin-top: 1.5rem;
-    }
-
-    .bar {
-      width: 3px;
-      border-radius: 2px;
-      background: var(--signal);
-      animation: wave 1.4s ease-in-out infinite;
-    }
-
-    @keyframes wave {
-      0%, 100% { transform: scaleY(1); }
-      50%       { transform: scaleY(0.3); }
-    }
-
-    /* ─── Spotify embed ─── */
-    .music-section .embed-wrap {
-      margin-top: 3rem;
-      border-radius: 4px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
-
-    .music-section iframe {
-      display: block;
-      border: none;
-    }
-
-    /* ─── YouTube ─── */
-    .yt-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-top: 2rem;
-      padding: 1rem 1.75rem;
-      background: #FF0000;
-      color: var(--white);
-      text-decoration: none;
-      border-radius: 4px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .yt-link:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(255,0,0,0.3);
-    }
-
-    /* ─── Timeline ─── */
-    .timeline {
-      position: relative;
-      margin-top: 3rem;
-      padding-left: 2rem;
-    }
-
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 1px;
-      background: rgba(255,255,255,0.1);
-    }
-
-    .tl-item {
-      position: relative;
-      margin-bottom: 2.5rem;
-      padding-left: 1.5rem;
-    }
-
-    .tl-item::before {
-      content: '';
-      position: absolute;
-      left: -2rem;
-      top: 0.4rem;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--signal);
-      box-shadow: 0 0 0 4px rgba(194,77,44,0.15);
-    }
-
-    .tl-date {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: var(--signal);
-      text-transform: uppercase;
-      margin-bottom: 0.3rem;
-    }
-
-    .tl-title {
-      font-family: var(--font-display);
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--paper);
-      margin-bottom: 0.3rem;
-    }
-
-    .tl-body {
-      font-size: 0.9rem;
-      color: var(--fade);
-      line-height: 1.6;
-    }
-
-    /* ─── Social ─── */
-    .social-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-top: 3rem;
-    }
-
-    .social-card {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1.2rem 1.5rem;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 4px;
-      text-decoration: none;
-      color: var(--paper);
-      transition: background 0.2s, border-color 0.2s, transform 0.2s;
-    }
-
-    .social-card:hover {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.15);
-      transform: translateY(-2px);
-    }
-
-    .social-icon {
-      width: 2.2rem;
-      height: 2.2rem;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .social-name {
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .social-handle {
-      font-size: 0.78rem;
-      color: var(--fade);
-    }
-
-    /* ─── Footer ─── */
-    footer {
-      padding: 3rem 2.5rem;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .footer-logo {
-      font-family: var(--font-display);
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: var(--paper);
-      letter-spacing: -0.03em;
-    }
-
-    .footer-logo span { color: var(--signal); }
-
-    .footer-copy {
-      font-size: 0.8rem;
-      color: var(--fade);
-    }
-
-    /* ─── Responsive ─── */
-    @media (max-width: 768px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links { display: none; }
-
-      .hero { padding: 7rem 1.5rem 4rem; }
-
-      section { padding: 4rem 1.5rem; }
-      .divider { margin: 0 1.5rem; }
-
-      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-      footer { flex-direction: column; text-align: center; }
-    }
-
-    /* ─── Animations on scroll ─── */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ciaa - Ciaa Wiki</title>
+<link rel="icon" type="image/x-icon" href="https://ciaamusic.pages.dev/favicon.ico" />
+<link href="https://fonts.googleapis.com/css2?family=Linux+Libertine:wght@400;700&family=Liberation+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ════════════════════════════════════
+     MediaWiki / Miraheze look — Vector-ish skin
+     ════════════════════════════════════ */
+  :root{
+    --mw-link:#0645ad;
+    --mw-link-visited:#0b0080;
+    --mw-link-red:#ba0000;
+    --mw-border:#a2a9b1;
+    --mw-border-light:#eaecf0;
+    --mw-bg:#fff;
+    --mw-bg-page:#f6f6f6;
+    --mw-bg-sidebar:#f8f9fa;
+    --mw-text:#202122;
+    --mw-text-muted:#54595d;
+    --mw-header-bg:#f8f9fa;
+    --mw-infobox-bg:#f8f9fa;
+    --mw-infobox-border:#a2a9b1;
+    --serif:'Linux Libertine','Georgia','Times New Roman',serif;
+    --sans:'Liberation Sans','Helvetica Neue',Arial,sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--mw-bg-page);
+    color:var(--mw-text);
+    font-family:var(--sans);
+    font-size:14px;
+    line-height:1.6;
+  }
+  a{color:var(--mw-link);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  a:visited{color:var(--mw-link-visited);}
+  a.new{color:var(--mw-link-red);}
+
+  /* ─── Top personal bar ─── */
+  .personal-bar{
+    background:#eaecf0;
+    border-bottom:1px solid var(--mw-border);
+    font-size:12px;
+    padding:4px 16px;
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+    color:var(--mw-text-muted);
+  }
+  .personal-bar a{color:var(--mw-text-muted);}
+  .personal-bar a:hover{color:var(--mw-link);}
+
+  /* ─── Header ─── */
+  .site-header{
+    background:linear-gradient(180deg,#fff 0%,#f8f9fa 100%);
+    border-bottom:1px solid var(--mw-border);
+    padding:10px 20px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .site-logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+  }
+  .site-logo-icon{
+    width:42px;height:42px;
+    border-radius:4px;
+    background:linear-gradient(145deg,#c24d2c,#4a3f8f);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);
+    font-weight:700;
+    color:#fff;
+    font-size:1.4rem;
+    flex-shrink:0;
+  }
+  .site-logo-text{
+    font-family:var(--serif);
+    font-size:1.3rem;
+    font-weight:700;
+    color:var(--mw-text);
+  }
+  .site-logo-sub{
+    font-size:0.7rem;
+    color:var(--mw-text-muted);
+    margin-top:-2px;
+  }
+
+  .search-box{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+  }
+  .search-box input{
+    border:1px solid var(--mw-border);
+    border-right:none;
+    padding:7px 10px;
+    font-size:13px;
+    width:220px;
+    border-radius:2px 0 0 2px;
+    background:#fff;
+  }
+  .search-box input:focus{outline:1px solid #36c;}
+  .search-box button{
+    border:1px solid var(--mw-border);
+    background:#f8f9fa;
+    padding:7px 12px;
+    border-radius:0 2px 2px 0;
+    cursor:pointer;
+  }
+  .search-box button:hover{background:#eaecf0;}
+
+  /* ─── Nav tabs ─── */
+  .nav-tabs{
+    background:#f8f9fa;
+    border-bottom:1px solid var(--mw-border);
+    padding:0 20px;
+    display:flex;
+    gap:2px;
+    overflow-x:auto;
+  }
+  .nav-tabs a{
+    padding:9px 14px;
+    font-size:13px;
+    color:var(--mw-text);
+    border-bottom:3px solid transparent;
+    white-space:nowrap;
+  }
+  .nav-tabs a:hover{
+    background:#eaecf0;
+    text-decoration:none;
+  }
+  .nav-tabs a.active{
+    border-bottom-color:var(--mw-link);
+    font-weight:700;
+  }
+
+  /* ─── Layout ─── */
+  .wiki-layout{
+    display:flex;
+    max-width:1400px;
+    margin:0 auto;
+    background:var(--mw-bg);
+    min-height:80vh;
+  }
+
+  /* ─── Sidebar ─── */
+  .sidebar{
+    width:200px;
+    flex-shrink:0;
+    background:var(--mw-bg-sidebar);
+    border-right:1px solid var(--mw-border-light);
+    padding:16px 12px;
+  }
+  .sidebar-group{margin-bottom:20px;}
+  .sidebar-title{
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--mw-text-muted);
+    margin-bottom:6px;
+    padding-bottom:4px;
+    border-bottom:1px solid var(--mw-border-light);
+  }
+  .sidebar-group ul{list-style:none;margin:0;padding:0;}
+  .sidebar-group li{margin-bottom:5px;}
+  .sidebar-group a{font-size:12.5px;color:var(--mw-link);}
+
+  /* ─── Main content ─── */
+  .content{
+    flex:1;
+    padding:20px 28px;
+    min-width:0;
+  }
+
+  .page-title{
+    font-family:var(--serif);
+    font-size:2rem;
+    font-weight:400;
+    border-bottom:1px solid var(--mw-border);
+    padding-bottom:6px;
+    margin-bottom:14px;
+    color:var(--mw-text);
+  }
+
+  .page-subtitle-bar{
+    font-size:12px;
+    color:var(--mw-text-muted);
+    margin-bottom:18px;
+  }
+
+  .wiki-body{
+    display:flex;
+    gap:24px;
+    align-items:flex-start;
+  }
+
+  .wiki-prose{flex:1;min-width:0;}
+  .wiki-prose p{margin:0 0 14px;}
+  .wiki-prose h2{
+    font-family:var(--serif);
+    font-size:1.5rem;
+    font-weight:400;
+    border-bottom:1px solid var(--mw-border-light);
+    margin:28px 0 12px;
+    padding-bottom:4px;
+  }
+  .wiki-prose h3{
+    font-family:var(--serif);
+    font-size:1.15rem;
+    font-weight:700;
+    margin:20px 0 8px;
+  }
+  .wiki-prose ul{margin:0 0 14px;padding-left:30px;}
+  .wiki-prose li{margin-bottom:4px;}
+  .wiki-prose strong{font-weight:700;}
+
+  /* ─── Infobox ─── */
+  .infobox{
+    width:280px;
+    flex-shrink:0;
+    background:var(--mw-infobox-bg);
+    border:1px solid var(--mw-infobox-border);
+    font-size:12.5px;
+  }
+  .infobox-title{
+    background:#e8e8e8;
+    text-align:center;
+    font-weight:700;
+    font-size:1.1rem;
+    font-family:var(--serif);
+    padding:8px;
+    border-bottom:1px solid var(--mw-infobox-border);
+  }
+  .infobox-image{
+    text-align:center;
+    padding:10px;
+    border-bottom:1px solid var(--mw-infobox-border);
+  }
+  .infobox-image img{
+    max-width:100%;
+    border:1px solid var(--mw-border);
+  }
+  .infobox-caption{
+    font-size:11px;
+    color:var(--mw-text-muted);
+    margin-top:4px;
+  }
+  .infobox table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  .infobox td{
+    padding:5px 8px;
+    border-top:1px solid #eee;
+    vertical-align:top;
+  }
+  .infobox td.label{
+    font-weight:700;
+    width:38%;
+    color:var(--mw-text-muted);
+  }
+  .infobox-section{
+    background:#eaecf0;
+    font-weight:700;
+    text-align:center;
+    padding:4px;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+  }
+
+  /* ─── Infobox links chips ─── */
+  .infobox-links{
+    padding:8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+  }
+  .ibox-chip{
+    font-size:11px;
+    padding:3px 8px;
+    background:#fff;
+    border:1px solid var(--mw-border);
+    border-radius:10px;
+  }
+
+  /* ─── TOC ─── */
+  .toc{
+    background:#f8f9fa;
+    border:1px solid var(--mw-border-light);
+    display:inline-block;
+    padding:10px 24px 10px 14px;
+    margin-bottom:20px;
+    font-size:13px;
+  }
+  .toc-title{font-weight:700;margin-bottom:6px;}
+  .toc ol{margin:0;padding-left:18px;}
+  .toc li{margin-bottom:3px;}
+  .toc a{color:var(--mw-link);}
+
+  /* ─── Discography table ─── */
+  .wikitable{
+    border-collapse:collapse;
+    width:100%;
+    margin:10px 0 20px;
+    font-size:13px;
+  }
+  .wikitable caption{
+    font-weight:700;
+    margin-bottom:6px;
+    text-align:left;
+  }
+  .wikitable th{
+    background:#eaecf0;
+    border:1px solid var(--mw-border);
+    padding:6px 10px;
+    text-align:left;
+    font-weight:700;
+  }
+  .wikitable td{
+    border:1px solid var(--mw-border-light);
+    padding:6px 10px;
+  }
+  .wikitable tr:nth-child(even){background:#f8f9fa;}
+  .wikitable tr:hover{background:#eaf3ff;}
+
+  .type-tag{
+    font-size:10.5px;
+    font-weight:700;
+    padding:1px 6px;
+    border-radius:3px;
+    text-transform:uppercase;
+  }
+  .tag-album{background:#e6dcff;color:#4a3f8f;}
+  .tag-ep{background:#dde6ff;color:#2b3f8f;}
+  .tag-single{background:#ffe3d6;color:#9c3c1f;}
+
+  /* ─── Cover thumb in table ─── */
+  .table-cover{
+    width:44px;height:44px;
+    object-fit:cover;
+    border:1px solid var(--mw-border);
+    vertical-align:middle;
+  }
+
+  /* ─── Citation/reference style ─── */
+  .ref-note{
+    font-size:11.5px;
+    color:var(--mw-text-muted);
+    vertical-align:super;
+  }
+
+  /* ─── Footer ─── */
+  .wiki-footer{
+    border-top:1px solid var(--mw-border);
+    background:var(--mw-bg-sidebar);
+    padding:16px 28px;
+    font-size:11.5px;
+    color:var(--mw-text-muted);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .wiki-footer a{font-size:11.5px;}
+
+  /* ─── Search overlay results ─── */
+  .search-results{
+    position:absolute;
+    top:38px;
+    left:0;
+    width:320px;
+    background:#fff;
+    border:1px solid var(--mw-border);
+    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+    z-index:50;
+    display:none;
+    max-height:300px;
+    overflow-y:auto;
+  }
+  .search-results.show{display:block;}
+  .search-results a{
+    display:block;
+    padding:8px 12px;
+    border-bottom:1px solid var(--mw-border-light);
+    color:var(--mw-text);
+    font-size:13px;
+  }
+  .search-results a:hover{background:#eaf3ff;text-decoration:none;}
+  .search-results .sr-title{font-weight:700;color:var(--mw-link);}
+  .search-results .sr-snippet{font-size:11.5px;color:var(--mw-text-muted);}
+  .search-results .sr-empty{padding:10px 12px;color:var(--mw-text-muted);font-size:12.5px;}
+
+  /* ─── Comments / Giscus section ─── */
+  .comments-section{
+    margin-top:32px;
+    border-top:2px solid var(--mw-border);
+    padding-top:16px;
+  }
+  .comments-heading{
+    font-family:var(--serif);
+    font-size:1.5rem;
+    font-weight:400;
+    margin-bottom:6px;
+  }
+  .comments-note{
+    font-size:12px;
+    color:var(--mw-text-muted);
+    margin-bottom:16px;
+    background:#fff8e1;
+    border:1px solid #e6d68a;
+    padding:8px 12px;
+    border-radius:3px;
+  }
+
+  /* ─── Wiki sections hidden by tabs ─── */
+  .wiki-page{display:none;}
+  .wiki-page.active{display:block;}
+
+  /* ─── Responsive ─── */
+  @media (max-width:900px){
+    .wiki-body{flex-direction:column;}
+    .infobox{width:100%;}
+    .sidebar{display:none;}
+    .search-box input{width:140px;}
+  }
+</style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a href="#" class="nav-logo">Ciaa<span>.</span></a>
-    <ul class="nav-links">
-      <li><a href="#sobre-mi">Sobre mí</a></li>
-      <li><a href="discografia.html">Discografía</a></li>
-      <li><a href="#musica">Música</a></li>
-      <li><a href="#contacto">Contacto</a></li>
-    </ul>
-  </nav>
+<!-- PERSONAL BAR -->
+<div class="personal-bar">
+  <a href="discografia.html">Discografía clásica</a>
+  <a href="https://open.spotify.com/intl-es/artist/4ILmv8T9N6aLTtf31c6yEq" target="_blank" rel="noopener">Spotify</a>
+  <a href="https://www.youtube.com/@CiaaMusic" target="_blank" rel="noopener">YouTube</a>
+</div>
 
-  <!-- HERO -->
-  <section class="hero" id="inicio">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-
-    <p class="hero-eyebrow">Cantante · Concepción, Chile</p>
-
-    <h1 class="hero-name">
-      Ciaa<span class="stroke">.</span>
-    </h1>
-
-    <p class="hero-tagline">
-      Música que nace desde el sur de Chile para el mundo.
-      Sonidos que cruzan géneros y emociones, con una identidad propia.
-    </p>
-
-    <div class="hero-cta">
-      <a href="https://open.spotify.com/intl-es/artist/4ILmv8T9N6aLTtf31c6yEq" target="_blank" rel="noopener" class="btn btn-primary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-        Escuchar en Spotify
-      </a>
-      <a href="#discografia" class="btn btn-ghost">Ver discografía</a>
+<!-- HEADER -->
+<div class="site-header">
+  <a href="#" class="site-logo" onclick="showPage('articulo');return false;">
+    <div class="site-logo-icon">C</div>
+    <div>
+      <div class="site-logo-text">Ciaa Wiki</div>
+      <div class="site-logo-sub">La enciclopedia libre sobre Ciaa</div>
     </div>
+  </a>
 
-    <div class="scroll-indicator">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-      Scroll
+  <div class="search-box" style="position:relative;">
+    <input type="text" id="wikiSearch" placeholder="Buscar en Ciaa Wiki" autocomplete="off" />
+    <button onclick="doSearch()">🔍</button>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <a href="#" class="active" data-page="articulo" onclick="showPage('articulo');return false;">Artículo</a>
+  <a href="#" data-page="discografia" onclick="showPage('discografia');return false;">Discografía</a>
+  <a href="#" data-page="biografia" onclick="showPage('biografia');return false;">Biografía detallada</a>
+  <a href="#" data-page="comentarios" onclick="showPage('comentarios');return false;">Discusión</a>
+</div>
+
+<div class="wiki-layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-group">
+      <div class="sidebar-title">Navegación</div>
+      <ul>
+        <li><a href="#" onclick="showPage('articulo');return false;">Página principal</a></li>
+        <li><a href="#" onclick="showPage('discografia');return false;">Discografía</a></li>
+        <li><a href="#" onclick="showPage('biografia');return false;">Biografía</a></li>
+        <li><a href="#" onclick="showPage('comentarios');return false;">Discusión</a></li>
+      </ul>
     </div>
-  </section>
+    <div class="sidebar-group">
+      <div class="sidebar-title">Enlaces externos</div>
+      <ul>
+        <li><a href="https://open.spotify.com/intl-es/artist/4ILmv8T9N6aLTtf31c6yEq" target="_blank" rel="noopener">Spotify oficial</a></li>
+        <li><a href="https://www.youtube.com/@CiaaMusic" target="_blank" rel="noopener">YouTube @CiaaMusic</a></li>
+        <li><a href="discografia.html">Sitio de discografía</a></li>
+      </ul>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-title">Datos del artículo</div>
+      <ul>
+        <li><a href="#">Última edición: 2026</a></li>
+        <li><a href="#">Idioma: Español</a></li>
+      </ul>
+    </div>
+  </div>
 
-  <hr class="divider" />
+  <!-- CONTENT: ARTÍCULO PRINCIPAL -->
+  <div class="content wiki-page active" id="page-articulo">
+    <h1 class="page-title">Ciaa</h1>
+    <div class="page-subtitle-bar">Desde Ciaa Wiki, la enciclopedia libre sobre el artista</div>
 
-  <!-- SOBRE MÍ -->
-  <section id="sobre-mi">
-    <div class="section-inner">
-      <p class="section-label fade-up">Quién soy</p>
-      <h2 class="section-title fade-up">Cristóbal Ignacio A.</h2>
+    <div class="wiki-body">
+      <div class="wiki-prose">
 
-      <div class="about-grid">
-        <div class="about-text fade-up">
-          <p>
-            <strong>Ciaa</strong> es el nombre artístico de Cristóbal Ignacio A., cantante nacido en <strong>Concepción, Chile</strong>. Su historia como músico comenzó en <strong>septiembre de 2025</strong>, marcando el inicio de una carrera que —aunque breve— ha dejado una huella genuina.
-          </p>
-          <p>
-            Tras un período de retiro en agosto de 2025, Ciaa regresó renovado en <strong>enero de 2026</strong> con su nombre artístico actual, consolidando una identidad sonora y visual propia que lo distingue en la escena musical chilena emergente.
-          </p>
-          <p>
-            También conocido por sus apodos <strong>"El Rey"</strong> y <strong>"SobraCiaa"</strong>, su música fusiona géneros con honestidad y ambición, representando el sonido de una nueva generación de artistas del sur de Chile.
-          </p>
-
-          <!-- Waveform decorativa -->
-          <div class="waveform" aria-hidden="true">
-            <div class="bar" style="height:12px; animation-delay:0s"></div>
-            <div class="bar" style="height:22px; animation-delay:0.1s"></div>
-            <div class="bar" style="height:30px; animation-delay:0.2s"></div>
-            <div class="bar" style="height:18px; animation-delay:0.3s"></div>
-            <div class="bar" style="height:28px; animation-delay:0.4s"></div>
-            <div class="bar" style="height:14px; animation-delay:0.5s"></div>
-            <div class="bar" style="height:32px; animation-delay:0.6s"></div>
-            <div class="bar" style="height:20px; animation-delay:0.7s"></div>
-            <div class="bar" style="height:10px; animation-delay:0.8s"></div>
-            <div class="bar" style="height:26px; animation-delay:0.9s"></div>
-            <div class="bar" style="height:16px; animation-delay:1s"></div>
-            <div class="bar" style="height:34px; animation-delay:1.1s"></div>
-          </div>
+        <div class="toc">
+          <div class="toc-title">Contenido</div>
+          <ol>
+            <li><a href="#biografia-resumen">Biografía</a></li>
+            <li><a href="#carrera">Carrera musical</a></li>
+            <li><a href="#discografia-resumen">Discografía</a></li>
+            <li><a href="#colaboraciones">Colaboraciones</a></li>
+            <li><a href="#enlaces">Enlaces externos</a></li>
+          </ol>
         </div>
 
-        <div class="about-stats fade-up">
-          <div class="stat-card">
-            <div class="stat-num">1<span class="accent"> EP</span></div>
-            <div class="stat-label">Es Hora De Relajarse</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">1<span class="accent"> Single</span></div>
-            <div class="stat-label">Cuidado (2025)</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">2<span class="accent">+</span></div>
-            <div class="stat-label">Artistas colaboradores</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">🇨🇱</div>
-            <div class="stat-label">Concepción, Chile</div>
-          </div>
+        <p>
+          <strong>Ciaa</strong> es el nombre artístico de <strong>Cristóbal Ignacio A.</strong>, cantante chileno nacido en <strong>Concepción, Chile</strong>. Es conocido por fusionar géneros con una identidad sonora propia, y por apodos como <em>"El Rey"</em> y <em>"SobraCiaa"</em>.<span class="ref-note">[1]</span>
+        </p>
+
+        <h2 id="biografia-resumen">Biografía</h2>
+        <p>
+          Ciaa inició su carrera musical en <strong>septiembre de 2025</strong>. Tras un breve período de retiro en agosto de 2025, regresó en <strong>enero de 2026</strong> bajo su nombre artístico definitivo, consolidando la identidad que mantiene hasta hoy.<span class="ref-note">[2]</span>
+        </p>
+
+        <h2 id="carrera">Carrera musical</h2>
+        <p>
+          Su debut discográfico fue el single <em>"Cuidado"</em>, lanzado en 2026, que marcó el inicio formal de su carrera bajo el nombre Ciaa. Posteriormente lanzó el EP colaborativo <em>"Es Hora De Relajarse"</em> junto al artista <strong>4K2</strong>, originalmente concebido como álbum.<span class="ref-note">[3]</span>
+        </p>
+        <p>
+          En 2026 continuó su producción con el single <em>"Sin Frenos..."</em> y comenzó el desarrollo de su álbum debut, <strong>"Llama Pronto"</strong>, su proyecto de estudio más ambicioso hasta la fecha.
+        </p>
+
+        <h2 id="discografia-resumen">Discografía</h2>
+        <p>Para el artículo detallado, véase <a href="#" onclick="showPage('discografia');return false;">Discografía de Ciaa</a>.</p>
+        <table class="wikitable">
+          <tr><th>Título</th><th>Tipo</th><th>Año</th></tr>
+          <tr><td>Llama Pronto</td><td><span class="type-tag tag-album">Álbum</span></td><td>2026</td></tr>
+          <tr><td>Sin Frenos...</td><td><span class="type-tag tag-single">Single</span></td><td>2026</td></tr>
+          <tr><td>Cuidado</td><td><span class="type-tag tag-single">Single</span></td><td>2026</td></tr>
+          <tr><td>Es Hora De Relajarse</td><td><span class="type-tag tag-ep">EP</span></td><td>2025</td></tr>
+        </table>
+
+        <h2 id="colaboraciones">Colaboraciones</h2>
+        <p>
+          Ciaa ha colaborado con el artista <strong>4K2</strong> en el EP <em>"Es Hora De Relajarse"</em>, su primera colaboración documentada.
+        </p>
+
+        <h2 id="enlaces">Enlaces externos</h2>
+        <ul>
+          <li><a href="https://open.spotify.com/intl-es/artist/4ILmv8T9N6aLTtf31c6yEq" target="_blank" rel="noopener">Perfil oficial en Spotify</a></li>
+          <li><a href="https://www.youtube.com/@CiaaMusic" target="_blank" rel="noopener">Canal oficial en YouTube</a></li>
+        </ul>
+
+        <p style="font-size:11px;color:var(--mw-text-muted);margin-top:24px;">
+          [1][2][3] Fuentes: sitio oficial y wiki de Fandom del artista.
+        </p>
+      </div>
+
+      <!-- INFOBOX -->
+      <div class="infobox">
+        <div class="infobox-title">Ciaa</div>
+        <div class="infobox-image">
+          <img src="https://ciaamusic.pages.dev/lp.png" alt="Ciaa" />
+          <div class="infobox-caption">Ciaa, 2026</div>
+        </div>
+        <table>
+          <tr><td class="label">Nombre real</td><td>Cristóbal Ignacio A.</td></tr>
+          <tr><td class="label">Nacimiento</td><td>Concepción, Chile</td></tr>
+          <tr><td class="label">Apodos</td><td>"El Rey", "SobraCiaa"</td></tr>
+          <tr><td class="label">Ocupación</td><td>Cantante</td></tr>
+          <tr><td class="label">Inicio</td><td>Septiembre de 2025</td></tr>
+        </table>
+        <div class="infobox-section">Información musical</div>
+        <table>
+          <tr><td class="label">Género</td><td>Pop / Urbano</td></tr>
+          <tr><td class="label">Discográfica</td><td>Independiente</td></tr>
+          <tr><td class="label">Colaboradores</td><td>4K2</td></tr>
+        </table>
+        <div class="infobox-links">
+          <span class="ibox-chip">🎵 Spotify</span>
+          <span class="ibox-chip">▶️ YouTube</span>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <hr class="divider" />
+  <!-- CONTENT: DISCOGRAFÍA -->
+  <div class="content wiki-page" id="page-discografia">
+    <h1 class="page-title">Discografía de Ciaa</h1>
+    <div class="page-subtitle-bar">Desde Ciaa Wiki, la enciclopedia libre sobre el artista</div>
 
-  <!-- DISCOGRAFÍA -->
-  <section id="discografia" class="disco-section">
-    <div class="section-inner">
-      <p class="section-label fade-up">Obra musical</p>
-      <h2 class="section-title fade-up">Discografía</h2>
-
-      <div class="disco-grid">
-        <!-- Álbum: Llama Pronto -->
-        <div class="release-card fade-up">
-          <span class="release-type" style="background:rgba(139,92,246,0.2);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3);">Álbum Debut</span>
-          <div class="release-title">Llama Pronto</div>
-          <div class="release-artists">Ciaa</div>
-          <img src="https://ciaamusic.pages.dev/lp.png" alt="Portada Llama Pronto" style="width:100%;border-radius:3px;margin:0.75rem 0;object-fit:cover;aspect-ratio:1;" />
-          <p class="release-desc">
-            El primer álbum de estudio oficial de Ciaa. El salto definitivo de artista emergente a propuesta musical consolidada. Todos los caminos conducen a este punto.
-          </p>
-          <svg class="release-icon" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-        </div>
-
-        <!-- Single: Sin Frenos... -->
-        <div class="release-card fade-up">
-          <span class="release-type type-single">Single</span>
-          <div class="release-title">Sin Frenos…</div>
-          <div class="release-artists">Ciaa · 2026</div>
-          <img src="https://ciaamusic.pages.dev/sf.png" alt="Portada Sin Frenos..." style="width:100%;border-radius:3px;margin:0.75rem 0;object-fit:cover;aspect-ratio:1;" />
-          <p class="release-desc">
-            Un single de 2026 que captura la energía desbocada de Ciaa sin filtros ni pausas. La elipsis lo dice todo: esto no termina aquí.
-          </p>
-          <svg class="release-icon" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-        </div>
-
-        <!-- Single: Cuidado -->
-        <div class="release-card fade-up">
-          <span class="release-type type-single">Single</span>
-          <div class="release-title">Cuidado</div>
-          <div class="release-artists">Ciaa · 2026</div>
-          <p class="release-desc">
-            El debut oficial de Ciaa con su nombre artístico actual. Una propuesta sonora directa, sincera, y cargada de identidad propia. El punto de partida de todo.
-          </p>
-          <svg class="release-icon" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-        </div>
-
-        <!-- EP -->
-        <div class="release-card fade-up">
-          <span class="release-type type-ep">EP</span>
-          <div class="release-title">Es Hora De Relajarse</div>
-          <div class="release-artists">Ciaa & 4K2</div>
-          <img src="https://ciaamusic.pages.dev/ehdr.jpeg" alt="Portada Es Hora De Relajarse" style="width:100%;border-radius:3px;margin:0.75rem 0;object-fit:cover;aspect-ratio:1;" />
-          <p class="release-desc">
-            Un proyecto colaborativo con el artista <strong>4K2</strong>, lanzado originalmente como álbum y reclasificado como EP. Pensado para desconectar y fluir.
-          </p>
-          <svg class="release-icon" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-        </div>
-      </div>
-
-      <!-- Timeline carrera -->
-      <div style="max-width: 600px; margin-top: 4rem;">
-        <p class="section-label fade-up">Línea de tiempo</p>
-
-        <div class="timeline">
-          <div class="tl-item fade-up">
-            <div class="tl-date">Septiembre 2025</div>
-            <div class="tl-title">Inicio de carrera musical</div>
-            <div class="tl-body">Ciaa da sus primeros pasos como artista y lanza el single <em>"Cuidado"</em>, marcando su debut oficial en la escena musical.</div>
-          </div>
-          <div class="tl-item fade-up">
-            <div class="tl-date">2025</div>
-            <div class="tl-title">EP "Es Hora De Relajarse"</div>
-            <div class="tl-body">Colaboración con <strong>4K2</strong>, originalmente concebido como álbum, que expande el universo sonoro de Ciaa hacia nuevos horizontes.</div>
-          </div>
-          <div class="tl-item fade-up">
-            <div class="tl-date">Agosto 2025</div>
-            <div class="tl-title">Retiro temporal</div>
-            <div class="tl-body">Una pausa necesaria para reflexionar y redefinir el camino artístico.</div>
-          </div>
-          <div class="tl-item fade-up">
-            <div class="tl-date">Enero 2026</div>
-            <div class="tl-title">Regreso como Ciaa</div>
-            <div class="tl-body">Vuelve con fuerza y con un nombre artístico consolidado: <strong>Ciaa</strong>. Una nueva etapa, una identidad más clara.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider" />
-
-  <!-- MÚSICA (SPOTIFY) -->
-  <section id="musica" class="music-section">
-    <div class="section-inner">
-      <p class="section-label fade-up">Escuchar</p>
-      <h2 class="section-title fade-up">Mi música</h2>
-
-      <p class="fade-up" style="color: var(--fade); max-width: 50ch; margin-bottom: 2rem;">
-        Encuentra todos mis lanzamientos en Spotify y sigue mi perfil para estar al tanto de lo que viene.
+    <div class="wiki-prose">
+      <p>
+        Esta página detalla la <strong>discografía completa de Ciaa</strong>, incluyendo álbumes, EPs y sencillos lanzados desde el inicio de su carrera en septiembre de 2025.
       </p>
 
-      <div class="embed-wrap fade-up">
-        <iframe
-          src="https://open.spotify.com/embed/artist/4ILmv8T9N6aLTtf31c6yEq?utm_source=generator&theme=0"
-          width="100%"
-          height="352"
-          frameBorder="0"
-          allowfullscreen=""
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy">
-        </iframe>
-      </div>
+      <h2 id="albumes">Álbumes</h2>
+      <table class="wikitable">
+        <tr><th>Portada</th><th>Título</th><th>Año</th><th>Detalles</th></tr>
+        <tr>
+          <td><img class="table-cover" src="https://ciaamusic.pages.dev/lp.png" alt="Llama Pronto" /></td>
+          <td><strong>Llama Pronto</strong></td>
+          <td>2026</td>
+          <td>Álbum debut de estudio. Tracklist por anunciar.</td>
+        </tr>
+      </table>
+
+      <h2 id="eps">EPs</h2>
+      <table class="wikitable">
+        <tr><th>Portada</th><th>Título</th><th>Año</th><th>Detalles</th></tr>
+        <tr>
+          <td><img class="table-cover" src="https://ciaamusic.pages.dev/ehdr.jpeg" alt="Es Hora De Relajarse" /></td>
+          <td><strong>Es Hora De Relajarse</strong></td>
+          <td>2025</td>
+          <td>Con 4K2. Originalmente lanzado como álbum, reclasificado como EP.</td>
+        </tr>
+      </table>
+
+      <h2 id="singles">Sencillos</h2>
+      <table class="wikitable">
+        <tr><th>Portada</th><th>Título</th><th>Año</th><th>Detalles</th></tr>
+        <tr>
+          <td><img class="table-cover" src="https://ciaamusic.pages.dev/sf.png" alt="Sin Frenos..." /></td>
+          <td><strong>Sin Frenos...</strong></td>
+          <td>2026</td>
+          <td>Sencillo independiente.</td>
+        </tr>
+        <tr>
+          <td>—</td>
+          <td><strong>Cuidado</strong></td>
+          <td>2026</td>
+          <td>Sencillo debut bajo el nombre artístico Ciaa.</td>
+        </tr>
+      </table>
+
+      <p style="margin-top:20px;">Para más detalles visuales, consulta también el <a href="discografia.html">sitio de discografía con portadas e información ampliada</a>.</p>
     </div>
-  </section>
+  </div>
 
-  <hr class="divider" />
+  <!-- CONTENT: BIOGRAFÍA -->
+  <div class="content wiki-page" id="page-biografia">
+    <h1 class="page-title">Biografía detallada de Ciaa</h1>
+    <div class="page-subtitle-bar">Desde Ciaa Wiki, la enciclopedia libre sobre el artista</div>
 
-  <!-- YOUTUBE -->
-  <section id="videos">
-    <div class="section-inner">
-      <p class="section-label fade-up">Video</p>
-      <h2 class="section-title fade-up">YouTube</h2>
-
-      <p class="fade-up" style="color: var(--fade); max-width: 50ch;">
-        Contenido audiovisual, videoclips y más en el canal oficial de Ciaa en YouTube.
+    <div class="wiki-prose">
+      <h2 id="origenes">Orígenes</h2>
+      <p>
+        Cristóbal Ignacio A., conocido artísticamente como <strong>Ciaa</strong>, nació en <strong>Concepción, Chile</strong>. Antes de adoptar su nombre artístico definitivo, fue conocido por apodos como <em>"El Rey"</em> y <em>"SobraCiaa"</em> dentro de su círculo cercano.
       </p>
 
-      <a href="https://www.youtube.com/@CiaaMusic" target="_blank" rel="noopener" class="yt-link fade-up">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-        @CiaaMusic en YouTube
-      </a>
-    </div>
-  </section>
-
-  <hr class="divider" />
-
-  <!-- CONTACTO / REDES -->
-  <section id="contacto">
-    <div class="section-inner">
-      <p class="section-label fade-up">Conéctate</p>
-      <h2 class="section-title fade-up">Redes sociales</h2>
-
-      <p class="fade-up" style="color: var(--fade); max-width: 50ch;">
-        Sígueme en las plataformas y sé el primero en enterarte de nuevos lanzamientos.
+      <h2 id="debut">Debut musical (2025)</h2>
+      <p>
+        En <strong>septiembre de 2025</strong>, Ciaa lanzó su primer sencillo, <em>"Cuidado"</em>, marcando el inicio oficial de su carrera musical. Poco después, se embarcó en su primer proyecto colaborativo: el EP <em>"Es Hora De Relajarse"</em> junto al artista <strong>4K2</strong>, originalmente concebido como álbum y posteriormente reclasificado como EP.
       </p>
 
-      <div class="social-grid">
-        <a href="https://open.spotify.com/intl-es/artist/4ILmv8T9N6aLTtf31c6yEq" target="_blank" rel="noopener" class="social-card fade-up">
-          <div class="social-icon" style="background:#1DB954;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-          </div>
-          <div>
-            <div class="social-name">Spotify</div>
-            <div class="social-handle">Ciaa</div>
-          </div>
-        </a>
+      <h2 id="retiro">Retiro temporal (agosto 2025)</h2>
+      <p>
+        En agosto de 2025, Ciaa se retiró temporalmente de la música. Este período, aunque breve, fue descrito como una pausa necesaria para reflexionar sobre la dirección de su proyecto artístico.
+      </p>
 
-        <a href="https://www.youtube.com/@CiaaMusic" target="_blank" rel="noopener" class="social-card fade-up">
-          <div class="social-icon" style="background:#FF0000;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          </div>
-          <div>
-            <div class="social-name">YouTube</div>
-            <div class="social-handle">@CiaaMusic</div>
-          </div>
-        </a>
+      <h2 id="regreso">Regreso y consolidación (2026)</h2>
+      <p>
+        En <strong>enero de 2026</strong>, Ciaa regresó oficialmente, consolidando su nombre artístico y una identidad sonora más definida. Esta nueva etapa incluyó el lanzamiento del sencillo <em>"Sin Frenos..."</em> y el anuncio de su álbum debut, <strong>"Llama Pronto"</strong>, su proyecto más ambicioso hasta la fecha.
+      </p>
+
+      <h2 id="estilo">Estilo musical</h2>
+      <p>
+        La música de Ciaa se caracteriza por fusionar géneros con honestidad y una identidad propia, representando una nueva generación de artistas independientes del sur de Chile.
+      </p>
+    </div>
+  </div>
+
+  <!-- CONTENT: DISCUSIÓN / COMENTARIOS -->
+  <div class="content wiki-page" id="page-comentarios">
+    <h1 class="page-title">Discusión:Ciaa</h1>
+    <div class="page-subtitle-bar">Desde Ciaa Wiki — espacio de discusión sobre el artículo</div>
+
+    <div class="wiki-prose">
+      <div class="comments-section">
+        <div class="comments-heading">Comentarios</div>
+        <div class="comments-note">
+          Los comentarios funcionan a través de GitHub Discussions (Giscus). Necesitas iniciar sesión con tu cuenta de GitHub para comentar.
+        </div>
+
+        <!-- ═══ GISCUS EMBED ═══
+             Reemplaza los valores data-repo, data-repo-id, data-category y data-category-id
+             con los de tu propio repositorio. Instrucciones abajo en el README.
+        -->
+        <script src="https://giscus.app/client.js"
+                data-repo="TU-USUARIO/ciaa-site"
+                data-repo-id="REEMPLAZAR_REPO_ID"
+                data-category="General"
+                data-category-id="REEMPLAZAR_CATEGORY_ID"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="top"
+                data-theme="light"
+                data-lang="es"
+                crossorigin="anonymous"
+                async>
+        </script>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <a href="#" class="footer-logo">Ciaa<span>.</span></a>
-    <div class="footer-copy">© 2026 Ciaa — Concepción, Chile</div>
-  </footer>
+</div>
 
-  <!-- JS: fade-up on scroll -->
-  <script>
-    const observer = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
-      { threshold: 0.12 }
+<!-- FOOTER -->
+<div class="wiki-footer">
+  <div>Esta página fue editada por última vez en 2026. El contenido está disponible bajo licencia de uso libre, salvo que se indique lo contrario.</div>
+  <div>
+    <a href="discografia.html">Sitio oficial de discografía</a> ·
+    <a href="https://open.spotify.com/intl-es/artist/4ILmv8T9N6aLTtf31c6yEq" target="_blank" rel="noopener">Spotify</a> ·
+    <a href="https://www.youtube.com/@CiaaMusic" target="_blank" rel="noopener">YouTube</a>
+  </div>
+</div>
+
+<script>
+  /* ─── Tab / page switching ─── */
+  function showPage(id){
+    document.querySelectorAll('.wiki-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('.nav-tabs a').forEach(a => a.classList.remove('active'));
+    document.querySelector('.nav-tabs a[data-page="' + id + '"]').classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  /* ─── Mini search index ─── */
+  const searchIndex = [
+    { title: "Ciaa", page: "articulo", snippet: "Cantante chileno nacido en Concepción, Chile. Apodos: El Rey, SobraCiaa." },
+    { title: "Discografía de Ciaa", page: "discografia", snippet: "Álbumes, EPs y sencillos: Llama Pronto, Sin Frenos..., Cuidado, Es Hora De Relajarse." },
+    { title: "Biografía detallada de Ciaa", page: "biografia", snippet: "Orígenes, debut, retiro temporal y regreso del artista." },
+    { title: "Llama Pronto", page: "discografia", snippet: "Álbum debut de estudio de Ciaa, 2026." },
+    { title: "Sin Frenos...", page: "discografia", snippet: "Sencillo de Ciaa lanzado en 2026." },
+    { title: "Cuidado", page: "discografia", snippet: "Sencillo debut de Ciaa, 2026." },
+    { title: "Es Hora De Relajarse", page: "discografia", snippet: "EP colaborativo de Ciaa y 4K2, 2025." },
+    { title: "4K2", page: "discografia", snippet: "Artista colaborador de Ciaa en el EP Es Hora De Relajarse." },
+    { title: "Discusión:Ciaa", page: "comentarios", snippet: "Espacio de comentarios y discusión sobre el artículo." }
+  ];
+
+  const input = document.getElementById('wikiSearch');
+  const resultsBox = document.getElementById('searchResults');
+
+  function doSearch(){
+    const q = input.value.trim().toLowerCase();
+    resultsBox.innerHTML = '';
+    if(!q){ resultsBox.classList.remove('show'); return; }
+
+    const matches = searchIndex.filter(item =>
+      item.title.toLowerCase().includes(q) || item.snippet.toLowerCase().includes(q)
     );
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-  </script>
+
+    if(matches.length === 0){
+      resultsBox.innerHTML = '<div class="sr-empty">No se encontraron resultados para "' + input.value + '"</div>';
+    } else {
+      matches.forEach(m => {
+        const a = document.createElement('a');
+        a.href = '#';
+        a.innerHTML = '<div class="sr-title">' + m.title + '</div><div class="sr-snippet">' + m.snippet + '</div>';
+        a.onclick = (e) => { e.preventDefault(); showPage(m.page); resultsBox.classList.remove('show'); input.value=''; };
+        resultsBox.appendChild(a);
+      });
+    }
+    resultsBox.classList.add('show');
+  }
+
+  input.addEventListener('input', doSearch);
+  input.addEventListener('focus', () => { if(input.value) resultsBox.classList.add('show'); });
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.search-box')) resultsBox.classList.remove('show');
+  });
+  input.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){ e.preventDefault(); }
+  });
+</script>
+
 </body>
 </html>
