@@ -1,246 +1,952 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wiki ElCiaa - Oficial</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ciaa — Músico Chileno</title>
+  <link rel="icon" type="image/x-icon" href="https://ciaamusic.pages.dev/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Tokens ─── */
+    :root {
+      --ink:      #0d0d10;
+      --paper:    #f5f2ed;
+      --mist:     #e8e4dd;
+      --signal:   #c24d2c;   /* warm terracotta-ember */
+      --signal2:  #4a3f8f;   /* deep violet */
+      --fade:     #a09a90;
+      --white:    #ffffff;
+
+      --font-display: 'Syne', sans-serif;
+      --font-body:    'Space Grotesk', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── Noise overlay ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+
+    /* ─── Nav ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      background: rgba(13,13,16,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--paper);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--signal); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--fade);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--paper); }
+
+    /* ─── Hero ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 2.5rem 4rem;
+      overflow: hidden;
+    }
+
+    /* Animated radial glow */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(194,77,44,0.22) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -55%);
+      animation: pulse 6s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -55%) scale(1); opacity: 0.8; }
+      50%       { transform: translate(-50%, -55%) scale(1.12); opacity: 1; }
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(60px);
+    }
+
+    .orb-1 {
+      width: 350px; height: 350px;
+      background: rgba(74,63,143,0.3);
+      top: 10%; right: 5%;
+      animation: drift1 10s ease-in-out infinite;
+    }
+
+    .orb-2 {
+      width: 200px; height: 200px;
+      background: rgba(194,77,44,0.25);
+      bottom: 15%; left: 8%;
+      animation: drift2 13s ease-in-out infinite;
+    }
+
+    @keyframes drift1 {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50%       { transform: translateY(-30px) translateX(20px); }
+    }
+
+    @keyframes drift2 {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(25px); }
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--signal);
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 2.5rem;
+      height: 1px;
+      background: var(--signal);
+      vertical-align: middle;
+      margin-right: 0.75rem;
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 18vw, 14rem);
+      font-weight: 800;
+      line-height: 0.88;
+      letter-spacing: -0.04em;
+      color: var(--paper);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-name .stroke {
+      -webkit-text-stroke: 1.5px var(--paper);
+      color: transparent;
+    }
+
+    .hero-tagline {
+      margin-top: 2.5rem;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--fade);
+      max-width: 42ch;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.6rem;
+      border-radius: 2px;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: var(--signal);
+      color: var(--white);
+      box-shadow: 0 0 0 0 rgba(194,77,44,0.4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 8px 30px rgba(194,77,44,0.35);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--paper);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--paper);
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* ─── Scroll indicator ─── */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--fade);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      z-index: 1;
+      animation: bounce 2.5s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    .scroll-indicator svg { opacity: 0.5; }
+
+    /* ─── Section base ─── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2.5rem;
+    }
+
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--signal);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--paper);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 0 2.5rem;
+    }
+
+    /* ─── About ─── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+      margin-top: 2rem;
+    }
+
+    .about-text p {
+      color: var(--fade);
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+    }
+
+    .about-text p strong { color: var(--paper); }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 4px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card:hover { border-color: rgba(194,77,44,0.35); }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--paper);
+      line-height: 1;
+    }
+
+    .stat-num .accent { color: var(--signal); }
+
+    .stat-label {
+      margin-top: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--fade);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── Discography ─── */
+    .disco-section {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .disco-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .release-card {
+      position: relative;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 4px;
+      padding: 2rem;
+      overflow: hidden;
+      transition: transform 0.25s, border-color 0.25s;
+    }
+
+    .release-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--signal), var(--signal2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+
+    .release-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .release-card:hover::before { transform: scaleX(1); }
+
+    .release-type {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 2px;
+      margin-bottom: 1.2rem;
+    }
+
+    .type-single {
+      background: rgba(194,77,44,0.2);
+      color: #e8866a;
+      border: 1px solid rgba(194,77,44,0.3);
+    }
+
+    .type-ep {
+      background: rgba(74,63,143,0.25);
+      color: #9d94d4;
+      border: 1px solid rgba(74,63,143,0.35);
+    }
+
+    .release-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--paper);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .release-artists {
+      font-size: 0.85rem;
+      color: var(--fade);
+      margin-bottom: 1.2rem;
+    }
+
+    .release-desc {
+      font-size: 0.9rem;
+      color: var(--fade);
+      line-height: 1.6;
+    }
+
+    .release-icon {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      opacity: 0.1;
+    }
+
+    /* ─── Waveform visual ─── */
+    .waveform {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-top: 1.5rem;
+    }
+
+    .bar {
+      width: 3px;
+      border-radius: 2px;
+      background: var(--signal);
+      animation: wave 1.4s ease-in-out infinite;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(1); }
+      50%       { transform: scaleY(0.3); }
+    }
+
+    /* ─── Spotify embed ─── */
+    .music-section .embed-wrap {
+      margin-top: 3rem;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .music-section iframe {
+      display: block;
+      border: none;
+    }
+
+    /* ─── YouTube ─── */
+    .yt-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      padding: 1rem 1.75rem;
+      background: #FF0000;
+      color: var(--white);
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .yt-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255,0,0,0.3);
+    }
+
+    /* ─── Timeline ─── */
+    .timeline {
+      position: relative;
+      margin-top: 3rem;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+      padding-left: 1.5rem;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 0.4rem;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--signal);
+      box-shadow: 0 0 0 4px rgba(194,77,44,0.15);
+    }
+
+    .tl-date {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--signal);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+
+    .tl-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--paper);
+      margin-bottom: 0.3rem;
+    }
+
+    .tl-body {
+      font-size: 0.9rem;
+      color: var(--fade);
+      line-height: 1.6;
+    }
+
+    /* ─── Social ─── */
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .social-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 4px;
+      text-decoration: none;
+      color: var(--paper);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .social-card:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+    }
+
+    .social-icon {
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .social-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .social-handle {
+      font-size: 0.78rem;
+      color: var(--fade);
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      padding: 3rem 2.5rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--paper);
+      letter-spacing: -0.03em;
+    }
+
+    .footer-logo span { color: var(--signal); }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--fade);
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+
+      .hero { padding: 7rem 1.5rem 4rem; }
+
+      section { padding: 4rem 1.5rem; }
+      .divider { margin: 0 1.5rem; }
+
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { flex-direction: column; text-align: center; }
+    }
+
+    /* ─── Animations on scroll ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <h2>Wiki ElCiaa</h2>
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">Ciaa<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#sobre-mi">Sobre mí</a></li>
+      <li><a href="discografia.html">Discografía</a></li>
+      <li><a href="#musica">Música</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <p class="hero-eyebrow">Cantante · Concepción, Chile</p>
+
+    <h1 class="hero-name">
+      Ciaa<span class="stroke">.</span>
+    </h1>
+
+    <p class="hero-tagline">
+      Música que nace desde el sur de Chile para el mundo.
+      Sonidos que cruzan géneros y emociones, con una identidad propia.
+    </p>
+
+    <div class="hero-cta">
+      <a href="https://open.spotify.com/intl-es/artist/4ILmv8T9N6aLTtf31c6yEq" target="_blank" rel="noopener" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        Escuchar en Spotify
+      </a>
+      <a href="#discografia" class="btn btn-ghost">Ver discografía</a>
+    </div>
+
+    <div class="scroll-indicator">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      Scroll
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- SOBRE MÍ -->
+  <section id="sobre-mi">
+    <div class="section-inner">
+      <p class="section-label fade-up">Quién soy</p>
+      <h2 class="section-title fade-up">Cristóbal Ignacio A.</h2>
+
+      <div class="about-grid">
+        <div class="about-text fade-up">
+          <p>
+            <strong>Ciaa</strong> es el nombre artístico de Cristóbal Ignacio A., cantante nacido en <strong>Concepción, Chile</strong>. Su historia como músico comenzó en <strong>septiembre de 2025</strong>, marcando el inicio de una carrera que —aunque breve— ha dejado una huella genuina.
+          </p>
+          <p>
+            Tras un período de retiro en agosto de 2025, Ciaa regresó renovado en <strong>enero de 2026</strong> con su nombre artístico actual, consolidando una identidad sonora y visual propia que lo distingue en la escena musical chilena emergente.
+          </p>
+          <p>
+            También conocido por sus apodos <strong>"El Rey"</strong> y <strong>"SobraCiaa"</strong>, su música fusiona géneros con honestidad y ambición, representando el sonido de una nueva generación de artistas del sur de Chile.
+          </p>
+
+          <!-- Waveform decorativa -->
+          <div class="waveform" aria-hidden="true">
+            <div class="bar" style="height:12px; animation-delay:0s"></div>
+            <div class="bar" style="height:22px; animation-delay:0.1s"></div>
+            <div class="bar" style="height:30px; animation-delay:0.2s"></div>
+            <div class="bar" style="height:18px; animation-delay:0.3s"></div>
+            <div class="bar" style="height:28px; animation-delay:0.4s"></div>
+            <div class="bar" style="height:14px; animation-delay:0.5s"></div>
+            <div class="bar" style="height:32px; animation-delay:0.6s"></div>
+            <div class="bar" style="height:20px; animation-delay:0.7s"></div>
+            <div class="bar" style="height:10px; animation-delay:0.8s"></div>
+            <div class="bar" style="height:26px; animation-delay:0.9s"></div>
+            <div class="bar" style="height:16px; animation-delay:1s"></div>
+            <div class="bar" style="height:34px; animation-delay:1.1s"></div>
+          </div>
         </div>
 
-        <div class="translate-container">
-            <p><i class="fas fa-globe"></i> Idioma / Language:</p>
-            <div id="google_translate_element"></div>
+        <div class="about-stats fade-up">
+          <div class="stat-card">
+            <div class="stat-num">1<span class="accent"> EP</span></div>
+            <div class="stat-label">Es Hora De Relajarse</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">1<span class="accent"> Single</span></div>
+            <div class="stat-label">Cuidado (2025)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">2<span class="accent">+</span></div>
+            <div class="stat-label">Artistas colaboradores</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">🇨🇱</div>
+            <div class="stat-label">Concepción, Chile</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- DISCOGRAFÍA -->
+  <section id="discografia" class="disco-section">
+    <div class="section-inner">
+      <p class="section-label fade-up">Obra musical</p>
+      <h2 class="section-title fade-up">Discografía</h2>
+
+      <div class="disco-grid">
+        <!-- Álbum: Llama Pronto -->
+        <div class="release-card fade-up">
+          <span class="release-type" style="background:rgba(139,92,246,0.2);color:#c4b5fd;border:1px solid rgba(139,92,246,0.3);">Álbum Debut</span>
+          <div class="release-title">Llama Pronto</div>
+          <div class="release-artists">Ciaa</div>
+          <img src="https://ciaamusic.pages.dev/lp.png" alt="Portada Llama Pronto" style="width:100%;border-radius:3px;margin:0.75rem 0;object-fit:cover;aspect-ratio:1;" />
+          <p class="release-desc">
+            El primer álbum de estudio oficial de Ciaa. El salto definitivo de artista emergente a propuesta musical consolidada. Todos los caminos conducen a este punto.
+          </p>
+          <svg class="release-icon" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
         </div>
 
-        <ul class="nav-links">
-            <li><a href="#inicio" class="active"><i class="fas fa-home"></i> Inicio</a></li>
-            
-            <li class="section-title">Perfil del Artista</li>
-            <li><a href="#ciaa-vidapersonal"><i class="fas fa-user-circle"></i> Vida Personal</a></li>
-            <li><a href="#ciaa-carrera"><i class="fas fa-star"></i> Carrera Musical</a></li>
-            
-            <li class="section-title">Discografía</li>
-            <li><a href="#sin-destino"><i class="fas fa-compact-disc"></i> Sin Destino Fijo</a></li>
-            <li><a href="#todo-es-feliz"><i class="fas fa-music"></i> Todo Es Feliz</a></li>
-            <li><a href="#solo"><i class="fas fa-user"></i> Solo</a></li>
-            <li><a href="#album-cuidado"><i class="fas fa-record-vinyl"></i> Álbum: Cuidado</a></li>
-        </ul>
-        
-        <div class="visitor-counter">
-            <p><i class="fas fa-eye"></i> Visitas:</p>
-            <div class="counter-render">
-                <script type="text/javascript" src="https://contador.websiteout.com/js/21/0/1504/0"></script>
-            </div>
+        <!-- Single: Sin Frenos... -->
+        <div class="release-card fade-up">
+          <span class="release-type type-single">Single</span>
+          <div class="release-title">Sin Frenos…</div>
+          <div class="release-artists">Ciaa · 2026</div>
+          <img src="https://ciaamusic.pages.dev/sf.png" alt="Portada Sin Frenos..." style="width:100%;border-radius:3px;margin:0.75rem 0;object-fit:cover;aspect-ratio:1;" />
+          <p class="release-desc">
+            Un single de 2026 que captura la energía desbocada de Ciaa sin filtros ni pausas. La elipsis lo dice todo: esto no termina aquí.
+          </p>
+          <svg class="release-icon" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
         </div>
-    </nav>
 
-    <main class="main-content">
-        
-        <section id="inicio" class="wiki-section">
-            <div class="hero-banner">
-                <h1>Bienvenido a la Wiki Oficial</h1>
-                <p>El centro de información definitivo sobre los lanzamientos, producción y trayectoria de <strong>ElCiaa</strong>.</p>
-            </div>
-            <h2>Novedades Recientes</h2>
-            <p>Explora el catálogo musical completo lanzado en mayo de 2026. Utiliza el menú de redirección lateral para navegar por los singles, el álbum de estudio y la historia detallada del artista.</p>
-        </section>
+        <!-- Single: Cuidado -->
+        <div class="release-card fade-up">
+          <span class="release-type type-single">Single</span>
+          <div class="release-title">Cuidado</div>
+          <div class="release-artists">Ciaa · 2026</div>
+          <p class="release-desc">
+            El debut oficial de Ciaa con su nombre artístico actual. Una propuesta sonora directa, sincera, y cargada de identidad propia. El punto de partida de todo.
+          </p>
+          <svg class="release-icon" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        </div>
 
-        <section id="ciaa-vidapersonal" class="wiki-section" style="display:none;">
-            <div class="content-layout">
-                <div class="body-text">
-                    <div class="hero-banner" style="border-left-color: #00ffcc;">
-                        <h1>Vida Personal</h1>
-                        <p>Aspectos privados y orígenes de Cristóbal Ignacio.</p>
-                    </div>
-                    <h2>Orígenes y Nacimiento</h2>
-                    <p><strong>Cristóbal Ignacio</strong> nació en la ciudad de <strong>Concepción, Chile</strong>. Para ser más exactos, su nacimiento tuvo lugar en el prestigioso <strong>Sanatorio Alemán</strong> de dicha localidad de la Región del Bío-Bío.</p>
-                    
-                    <h2>Núcleo Familiar</h2>
-                    <p>El entorno familiar cercano de Cristóbal está compuesto de manera primordial por sus padres:</p>
-                    <ul>
-                        <li><strong>Madre:</strong> Laura</li>
-                        <li><strong>Padre:</strong> Claudio</li>
-                    </ul>
-                </div>
-                
-                <aside class="infobox" style="border-color: #00ffcc;">
-                    <h3>Datos Personales</h3>
-                    <div class="infobox-img">🏠</div>
-                    <div class="info-row"><strong>Nombre Real:</strong> <span>Cristóbal Ignacio</span></div>
-                    <div class="info-row"><strong>Nacimiento:</strong> <span>Concepción, Chile</span></div>
-                    <div class="info-row"><strong>Lugar Exacto:</strong> <span>Sanatorio Alemán</span></div>
-                    <div class="info-row"><strong>Madre:</strong> <span>Laura</span></div>
-                    <div class="info-row"><strong>Padre:</strong> <span>Claudio</span></div>
-                </aside>
-            </div>
-        </section>
+        <!-- EP -->
+        <div class="release-card fade-up">
+          <span class="release-type type-ep">EP</span>
+          <div class="release-title">Es Hora De Relajarse</div>
+          <div class="release-artists">Ciaa & 4K2</div>
+          <img src="https://ciaamusic.pages.dev/ehdr.jpeg" alt="Portada Es Hora De Relajarse" style="width:100%;border-radius:3px;margin:0.75rem 0;object-fit:cover;aspect-ratio:1;" />
+          <p class="release-desc">
+            Un proyecto colaborativo con el artista <strong>4K2</strong>, lanzado originalmente como álbum y reclasificado como EP. Pensado para desconectar y fluir.
+          </p>
+          <svg class="release-icon" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        </div>
+      </div>
 
-        <section id="ciaa-carrera" class="wiki-section" style="display:none;">
-            <div class="content-layout">
-                <div class="body-text">
-                    <div class="hero-banner" style="border-left-color: #ff007f;">
-                        <h1>Carrera Musical</h1>
-                        <p>La trayectoria, evolución y catálogo discográfico de Ciaa.</p>
-                    </div>
-                    <h2>Inicios y Retiro Temporal (2025)</h2>
-                    <p>Cristóbal comenzó su andadura formal en la música en el año <strong>2025</strong>. Sin embargo, tras atravesar una etapa de transición personal y artística, decidió retirarse temporalmente de los escenarios y lanzamientos oficiales.</p>
-                    
-                    <h2>El Regreso y Consolidación (2026)</h2>
-                    <p>En el año <strong>2026</strong>, regresó de manera definitiva a la escena musical adoptando el nombre artístico de <strong>Ciaa</strong>. Este retorno estuvo respaldado por una reestructuración completa de su equipo de trabajo y objetivos, hecho que fue confirmado de manera oficial en la conferencia de prensa conjunta celebrada por <em>News For Artists</em> y la comunidad organizada <em>ElCiaa Fans</em><span class="reference-tag" title="Conferencia de News For Artists y ElCiaa Fans">[1]</span>.</p>
-                    
-                    <h2>Evolución de Proyectos</h2>
-                    <p>A partir de su regreso, empezó a organizarse metódicamente para dar luz a una seguidilla de proyectos musicales de alto calibre. Su cadena de lanzamientos incluye:</p>
-                    <ol>
-                        <li><strong>"Sin Destino Fijo":</strong> Su emblemático sencillo de debut.</li>
-                        <li><strong>"Tal Vez...":</strong> Track de consolidación sonora.</li>
-                        <li><strong>"Cuidado":</strong> Su aplaudido proyecto de estudio.</li>
-                        <li><strong>"Es Hora De Relajarse":</strong> Una propuesta con tintes atmosféricos.</li>
-                    </ol>
-                    <p>Toda esta planificación fue desarrollada minuciosamente con el fin de alcanzar su meta artística definitiva: el desarrollo y presentación de su esperado álbum debut, titulado <strong>"Llama Pronto"</strong>.</p>
-                    
-                    <div class="references-section">
-                        <h3>Referencias</h3>
-                        <p class="ref-item"><sup>[1]</sup> Confirmado formalmente durante las declaraciones oficiales de la conferencia de prensa de <em>News For Artists & ElCiaa Fans (2026)</em>.</p>
-                    </div>
-                </div>
-                
-                <aside class="infobox" style="border-color: #ff007f;">
-                    <h3>Ficha Artística</h3>
-                    <div class="infobox-img">⚡</div>
-                    <div class="info-row"><strong>Nombre Artístico:</strong> <span>Ciaa / ElCiaa</span></div>
-                    <div class="info-row"><strong>Año de Inicio:</strong> <span>2025</span></div>
-                    <div class="info-row"><strong>Regreso Oficial:</strong> <span>2026</span></div>
-                    <div class="info-row"><strong>Meta Actual:</strong> <span>Álbum "Llama Pronto"</span></div>
-                </aside>
-            </div>
-        </section>
+      <!-- Timeline carrera -->
+      <div style="max-width: 600px; margin-top: 4rem;">
+        <p class="section-label fade-up">Línea de tiempo</p>
 
-        <section id="sin-destino" class="wiki-section" style="display:none;">
-            <div class="content-layout">
-                <div class="body-text">
-                    <h2>Sin Destino Fijo</h2>
-                    <p><strong>Sin Destino Fijo</strong> es el sencillo debut oficial del artista <strong>Ciaa</strong>, lanzado en mayo de 2026.</p>
-                </div>
-                <aside class="infobox">
-                    <h3>Sin Destino Fijo</h3>
-                    <div class="infobox-img">💿</div>
-                    <div class="info-row"><strong>Artista:</strong> <span>Ciaa</span></div>
-                    <div class="info-row"><strong>Tipo:</strong> <span>Single</span></div>
-                </aside>
-            </div>
-        </section>
+        <div class="timeline">
+          <div class="tl-item fade-up">
+            <div class="tl-date">Septiembre 2025</div>
+            <div class="tl-title">Inicio de carrera musical</div>
+            <div class="tl-body">Ciaa da sus primeros pasos como artista y lanza el single <em>"Cuidado"</em>, marcando su debut oficial en la escena musical.</div>
+          </div>
+          <div class="tl-item fade-up">
+            <div class="tl-date">2025</div>
+            <div class="tl-title">EP "Es Hora De Relajarse"</div>
+            <div class="tl-body">Colaboración con <strong>4K2</strong>, originalmente concebido como álbum, que expande el universo sonoro de Ciaa hacia nuevos horizontes.</div>
+          </div>
+          <div class="tl-item fade-up">
+            <div class="tl-date">Agosto 2025</div>
+            <div class="tl-title">Retiro temporal</div>
+            <div class="tl-body">Una pausa necesaria para reflexionar y redefinir el camino artístico.</div>
+          </div>
+          <div class="tl-item fade-up">
+            <div class="tl-date">Enero 2026</div>
+            <div class="tl-title">Regreso como Ciaa</div>
+            <div class="tl-body">Vuelve con fuerza y con un nombre artístico consolidado: <strong>Ciaa</strong>. Una nueva etapa, una identidad más clara.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <section id="todo-es-feliz" class="wiki-section" style="display:none;">
-            <div class="content-layout">
-                <div class="body-text">
-                    <h2>Todo Es Feliz</h2>
-                    <p>Sencillo realizado en colaboración con el artista <strong>MCx</strong>.</p>
-                </div>
-                <aside class="infobox">
-                    <h3>Todo Es Feliz</h3>
-                    <div class="infobox-img">🎵</div>
-                    <div class="info-row"><strong>Artista:</strong> <span>Ciaa</span></div>
-                    <div class="info-row"><strong>Colaboración:</strong> <span>MCx</span></div>
-                </aside>
-            </div>
-        </section>
+  <hr class="divider" />
 
-        <section id="solo" class="wiki-section" style="display:none;">
-            <div class="content-layout">
-                <div class="body-text">
-                    <h2>Solo</h2>
-                    <p>Single de corte individual lanzado en la tanda de mayo de 2026.</p>
-                </div>
-                <aside class="infobox">
-                    <h3>Solo</h3>
-                    <div class="infobox-img">🧑‍🎤</div>
-                    <div class="info-row"><strong>Artista:</strong> <span>Ciaa</span></div>
-                </aside>
-            </div>
-        </section>
+  <!-- MÚSICA (SPOTIFY) -->
+  <section id="musica" class="music-section">
+    <div class="section-inner">
+      <p class="section-label fade-up">Escuchar</p>
+      <h2 class="section-title fade-up">Mi música</h2>
 
-        <section id="album-cuidado" class="wiki-section" style="display:none;">
-            <div class="content-layout">
-                <div class="body-text">
-                    <h2>Álbum: Cuidado</h2>
-                    <p>Álbum de estudio que compone el catálogo central de Ciaa.</p>
-                    <h3>Tracklist</h3>
-                    <ul>
-                        <li>1. Horizonte de Neón</li>
-                        <li>2. Concepción</li>
-                        <li>3. Sin Frenos</li>
-                        <li>4. Todo Es Feliz (feat. MCx)</li>
-                    </ul>
-                </div>
-                <aside class="infobox">
-                    <h3>Cuidado</h3>
-                    <div class="infobox-img">🎚️</div>
-                    <div class="info-row"><strong>Artista:</strong> <span>Ciaa</span></div>
-                </aside>
-            </div>
-        </section>
-    </main>
+      <p class="fade-up" style="color: var(--fade); max-width: 50ch; margin-bottom: 2rem;">
+        Encuentra todos mis lanzamientos en Spotify y sigue mi perfil para estar al tanto de lo que viene.
+      </p>
 
-    <script>
-        const links = document.querySelectorAll('.nav-links a');
-        const sections = document.querySelectorAll('.wiki-section');
+      <div class="embed-wrap fade-up">
+        <iframe
+          src="https://open.spotify.com/embed/artist/4ILmv8T9N6aLTtf31c6yEq?utm_source=generator&theme=0"
+          width="100%"
+          height="352"
+          frameBorder="0"
+          allowfullscreen=""
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+  </section>
 
-        function navigateToSection(targetId) {
-            links.forEach(l => {
-                const href = l.getAttribute('href').substring(1);
-                if(href === targetId) l.classList.add('active');
-                else l.classList.remove('active');
-            });
+  <hr class="divider" />
 
-            sections.forEach(section => {
-                if(section.id === targetId) {
-                    section.style.display = 'block';
-                } else {
-                    section.style.display = 'none';
-                }
-            });
-            window.scrollTo(0, 0);
-        }
+  <!-- YOUTUBE -->
+  <section id="videos">
+    <div class="section-inner">
+      <p class="section-label fade-up">Video</p>
+      <h2 class="section-title fade-up">YouTube</h2>
 
-        links.forEach(link => {
-            link.addEventListener('click', (e) => {
-                const targetId = link.getAttribute('href').substring(1);
-                if(targetId) {
-                    e.preventDefault();
-                    history.pushState(null, null, `#${targetId}`);
-                    navigateToSection(targetId);
-                }
-            });
-        });
+      <p class="fade-up" style="color: var(--fade); max-width: 50ch;">
+        Contenido audiovisual, videoclips y más en el canal oficial de Ciaa en YouTube.
+      </p>
 
-        // Manejo de redirección nativa al cargar o usar flechas del navegador
-        window.addEventListener('popstate', () => {
-            const hash = window.location.hash.substring(1) || 'inicio';
-            navigateToSection(hash);
-        });
+      <a href="https://www.youtube.com/@CiaaMusic" target="_blank" rel="noopener" class="yt-link fade-up">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        @CiaaMusic en YouTube
+      </a>
+    </div>
+  </section>
 
-        // Carga inicial
-        const initialHash = window.location.hash.substring(1) || 'inicio';
-        navigateToSection(initialHash);
-    </script>
+  <hr class="divider" />
 
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'es', 
-                includedLanguages: 'en,es,pt,fr,it,de,ja,ko',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-            }, 'google_translate_element');
-        }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <!-- CONTACTO / REDES -->
+  <section id="contacto">
+    <div class="section-inner">
+      <p class="section-label fade-up">Conéctate</p>
+      <h2 class="section-title fade-up">Redes sociales</h2>
+
+      <p class="fade-up" style="color: var(--fade); max-width: 50ch;">
+        Sígueme en las plataformas y sé el primero en enterarte de nuevos lanzamientos.
+      </p>
+
+      <div class="social-grid">
+        <a href="https://open.spotify.com/intl-es/artist/4ILmv8T9N6aLTtf31c6yEq" target="_blank" rel="noopener" class="social-card fade-up">
+          <div class="social-icon" style="background:#1DB954;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+          </div>
+          <div>
+            <div class="social-name">Spotify</div>
+            <div class="social-handle">Ciaa</div>
+          </div>
+        </a>
+
+        <a href="https://www.youtube.com/@CiaaMusic" target="_blank" rel="noopener" class="social-card fade-up">
+          <div class="social-icon" style="background:#FF0000;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </div>
+          <div>
+            <div class="social-name">YouTube</div>
+            <div class="social-handle">@CiaaMusic</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="#" class="footer-logo">Ciaa<span>.</span></a>
+    <div class="footer-copy">© 2026 Ciaa — Concepción, Chile</div>
+  </footer>
+
+  <!-- JS: fade-up on scroll -->
+  <script>
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
